@@ -1,0 +1,47 @@
+<.header>
+  Listing Speakers
+  <:actions>
+    <.link patch={~p"/speakers/new"}>
+      <.button>New Speaker</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.table
+  id="speakers"
+  rows={@streams.speakers}
+  row_click={fn {_id, speaker} -> JS.navigate(~p"/speakers/#{speaker}") end}
+>
+  <:col :let={{_id, speaker}} label="Name"><%= speaker.name %></:col>
+  <:col :let={{_id, speaker}} label="Age"><%= speaker.age %></:col>
+  <:col :let={{_id, speaker}} label="Is prepared well"><%= speaker.is_prepared_well %></:col>
+  <:col :let={{_id, speaker}} label="Super power"><%= speaker.super_power %></:col>
+  <:col :let={{_id, speaker}} label="Company"><%= speaker.company %></:col>
+  <:col :let={{_id, speaker}} label="Topic"><%= speaker.topic %></:col>
+  <:col :let={{_id, speaker}} label="Position"><%= speaker.position %></:col>
+  <:action :let={{_id, speaker}}>
+    <div class="sr-only">
+      <.link navigate={~p"/speakers/#{speaker}"}>Show</.link>
+    </div>
+    <.link patch={~p"/speakers/#{speaker}/edit"}>Edit</.link>
+  </:action>
+  <:action :let={{id, speaker}}>
+    <.link
+      phx-click={JS.push("delete", value: %{id: speaker.id}) |> hide("##{id}")}
+      data-confirm="Are you sure?"
+    >
+      Delete
+    </.link>
+  </:action>
+</.table>
+
+<.modal :if={@live_action in [:new, :edit]} id="speaker-modal" show on_cancel={JS.patch(~p"/speakers")}>
+  <.live_component
+    module={MeetupWeb.SpeakerLive.FormComponent}
+    id={@speaker.id || :new}
+    title={@page_title}
+    action={@live_action}
+    speaker={@speaker}
+    patch={~p"/speakers"}
+  />
+</.modal>

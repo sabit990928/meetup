@@ -1,0 +1,32 @@
+<.header>
+  Speaker <%= @speaker.id %>
+  <:subtitle>This is a speaker record from your database.</:subtitle>
+  <:actions>
+    <.link patch={~p"/speakers/#{@speaker}/show/edit"} phx-click={JS.push_focus()}>
+      <.button>Edit speaker</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.list>
+  <:item title="Name"><%= @speaker.name %></:item>
+  <:item title="Age"><%= @speaker.age %></:item>
+  <:item title="Is prepared well"><%= @speaker.is_prepared_well %></:item>
+  <:item title="Super power"><%= @speaker.super_power %></:item>
+  <:item title="Company"><%= @speaker.company %></:item>
+  <:item title="Topic"><%= @speaker.topic %></:item>
+  <:item title="Position"><%= @speaker.position %></:item>
+</.list>
+
+<.back navigate={~p"/speakers"}>Back to speakers</.back>
+
+<.modal :if={@live_action == :edit} id="speaker-modal" show on_cancel={JS.patch(~p"/speakers/#{@speaker}")}>
+  <.live_component
+    module={MeetupWeb.SpeakerLive.FormComponent}
+    id={@speaker.id}
+    title={@page_title}
+    action={@live_action}
+    speaker={@speaker}
+    patch={~p"/speakers/#{@speaker}"}
+  />
+</.modal>
